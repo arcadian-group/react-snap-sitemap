@@ -1,6 +1,22 @@
+#!/usr/bin/env node
+
 const builder = require('xmlbuilder');
 const { readdir, writeFile, lstat } = require('fs');
 const { promisify } = require('util');
+const args = process.argv;
+
+const preFormattedBaseUrl = args.find((arg) => arg.startsWith('--base-url='));
+let baseUrl;
+
+if (preFormattedBaseUrl) {
+  baseUrl  = preFormattedBaseUrl.split('=')[1];
+} else {
+  throw (new Error('Missing valid --base-url command line argument'));
+}
+
+if (baseUrl.length === 0) {
+  throw (new Error('Pass a valid url to --base-url'));
+}
 
 const asyncReaddir = promisify(readdir), asyncWriteFile = promisify(writeFile), asyncLStat = promisify(lstat);
 
@@ -30,8 +46,6 @@ const readSite = async (dir) => {
 const blackList = [];
 
 (async () => {
-    const baseUrl = 'https://helixpersonas.com.au/';
-
     await readSite('build');
 
     const siteUrls = allRoots.map(root => root.replace('build/', baseUrl).replace('/index.html', ''));
