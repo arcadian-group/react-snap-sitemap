@@ -67,4 +67,6 @@ const blackList = [];
     const sitemap = urlset.end({ pretty: true });
 
     await asyncWriteFile('build/sitemap.xml', sitemap);
+
+    console.log('🙂 Successfully built sitemap.xml in build directory');
 })();
