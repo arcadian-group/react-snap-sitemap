@@ -4,7 +4,7 @@
   "engines": {
     "node": ">= 8.6.0"
   },
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Create a sitemap post react-snap SSR",
   "main": "index.js",
   "license": "MIT",
