@@ -1,10 +1,10 @@
 {
-  "name": "@arcadian-digital/react-snap-sitemap",
-  "repository": "arcadian-group/react-snap-sitemap",
+  "name": "@leadhome/react-snap-sitemap",
+  "repository": "leadhomesa/react-snap-sitemap",
   "engines": {
     "node": ">= 8.6.0"
   },
-  "version": "1.2.4",
+  "version": "0.1",
   "description": "Create a sitemap post react-snap SSR",
   "main": "index.js",
   "license": "MIT",

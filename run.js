@@ -6,6 +6,16 @@ const { promisify } = require('util');
 const args = process.argv;
 
 const preFormattedBaseUrl = args.find((arg) => arg.startsWith('--base-url='));
+const exclusionList = args.find((arg) => arg.startsWith('--black-list='));
+const preFormattedChangeFrequency = args.find((arg) => arg.startsWith('--change-frequency='));
+let blackList = [];
+
+if (exclusionList) {
+  let params = exclusionList.split('=')[1];
+  blackList = params.split(',');
+  console.log('👋 Exluding URLs:', blackList.join(', '))
+}
+
 let baseUrl;
 
 if (preFormattedBaseUrl) {
@@ -16,6 +26,14 @@ if (preFormattedBaseUrl) {
 
 if (baseUrl.length === 0) {
   throw (new Error('Pass a valid url to --base-url'));
+}
+
+let changeFrequency;
+
+if (preFormattedChangeFrequency) {
+    changeFrequency  = preFormattedChangeFrequency.split('=')[1];
+} else {
+    changeFrequency = 'monthly';
 }
 
 const asyncReaddir = promisify(readdir), asyncWriteFile = promisify(writeFile), asyncLStat = promisify(lstat);
@@ -32,18 +50,27 @@ const readSite = async (dir) => {
     const directory = await asyncReaddir(dir, { withFileTypes: true });
 
     await asyncForEach(directory, async fileOrDirectory => {
-        const root = `${dir}/${fileOrDirectory}`;
+        let path = fileOrDirectory;
+
+        if (typeof fileOrDirectory === 'object') {
+            path = fileOrDirectory.name;
+        }
+
+        if (path === '404') {
+            return;
+        }
+        
+        const root = `${dir}/${path}`;
+
         const stat = await asyncLStat(root);
 
         if (stat.isDirectory()) {
             await readSite(root);
-        } else if (fileOrDirectory === 'index.html') {
+        } else if (path === 'index.html') {
             allRoots = [...allRoots, root];
         }
     });
 }
-
-const blackList = [];
 
 (async () => {
     await readSite('build');
@@ -61,6 +88,9 @@ const blackList = [];
             const u = urlset.ele('url');
 
             u.ele('loc', url);
+            if (changeFrequency) { 
+                u.ele('changefreq', changeFrequency);
+            }
             u.ele('priority', 0.5);
         });
 
