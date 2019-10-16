@@ -60,7 +60,7 @@ const readSite = async (dir) => {
             return;
         }
         
-        const root = `${dir}/${path}`;
+        const root = `${dir}/${path}/`;
 
         const stat = await asyncLStat(root);
 
