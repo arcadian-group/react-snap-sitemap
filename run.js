@@ -32,12 +32,23 @@ const readSite = async (dir) => {
     const directory = await asyncReaddir(dir, { withFileTypes: true });
 
     await asyncForEach(directory, async fileOrDirectory => {
-        const root = `${dir}/${fileOrDirectory}`;
+        let path = fileOrDirectory;
+
+        if (typeof fileOrDirectory === 'object') {
+            path = fileOrDirectory.name;
+        }
+
+        if (path === '404') {
+            return;
+        }
+        
+        const root = `${dir}/${path}`;
+
         const stat = await asyncLStat(root);
 
         if (stat.isDirectory()) {
             await readSite(root);
-        } else if (fileOrDirectory === 'index.html') {
+        } else if (path === 'index.html') {
             allRoots = [...allRoots, root];
         }
     });
