@@ -15,8 +15,5 @@
   },
   "bin": {
     "react-snap-sitemap": "./run.js"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
   }
 }
