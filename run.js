@@ -72,6 +72,20 @@ const readSite = async (dir) => {
     });
 }
 
+const formatDate = (date) => {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 (async () => {
     await readSite('build');
 
@@ -86,12 +100,13 @@ const readSite = async (dir) => {
         .sort((a, b) => a.length - b.length)
         .forEach(url => {
             const u = urlset.ele('url');
-
             u.ele('loc', url);
+            u.ele('lastmod', formatDate(Date.now()))
             if (changeFrequency) { 
                 u.ele('changefreq', changeFrequency);
             }
-            u.ele('priority', 0.5);
+      
+            u.ele('priority', 0.8);
         });
 
     const sitemap = urlset.end({ pretty: true });
