@@ -1,6 +1,6 @@
 {
-  "name": "@leadhome/react-snap-sitemap",
-  "repository": "leadhomesa/react-snap-sitemap",
+  "name": "@fudohq/react-snap-sitemap",
+  "repository": "fudohq/react-snap-sitemap",
   "engines": {
     "node": ">= 8.6.0"
   },
