@@ -4,16 +4,18 @@
   "engines": {
     "node": ">= 8.6.0"
   },
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "Create a sitemap post react-snap SSR",
-  "keywords": ["automatic sitemap generator", "react-snap"],
+  "keywords": [
+    "automatic sitemap generator",
+    "react-snap"
+  ],
   "main": "index.js",
   "license": "MIT",
-  "private": false,
   "dependencies": {
     "fs": "^0.0.1-security",
-    "util": "^0.12.1",
-    "xmlbuilder": "^13.0.2"
+    "util": "^0.12.3",
+    "xmlbuilder": "15.1.1"
   },
   "bin": {
     "react-snap-sitemap": "./run.js"

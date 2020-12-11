@@ -106,7 +106,7 @@ const formatDate = (date) => {
         u.ele('changefreq', changeFrequency);
       }
 
-      url === baseUrl
+      url + "/" === baseUrl
         ? u.ele('priority', 1)
         : u.ele('priority', 0.8);
     });
