@@ -107,7 +107,7 @@ const formatDate = (date) => {
       }
 
       url + "/" === baseUrl
-        ? u.ele('priority', 1)
+        ? u.ele('priority', 1.0)
         : u.ele('priority', 0.8);
     });
 
