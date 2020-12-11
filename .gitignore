@@ -1,3 +1,5 @@
 node_modules
 # Don't need this file as this an npm package
 yarn.lock
+package-lock.json
+.idea

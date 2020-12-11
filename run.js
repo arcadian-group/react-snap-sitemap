@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 const builder = require('xmlbuilder');
-const { readdir, writeFile, lstat } = require('fs');
-const { promisify } = require('util');
+const {readdir, writeFile, lstat} = require('fs');
+const {promisify} = require('util');
 const args = process.argv;
 
 const preFormattedBaseUrl = args.find((arg) => arg.startsWith('--base-url='));
@@ -19,7 +19,7 @@ if (exclusionList) {
 let baseUrl;
 
 if (preFormattedBaseUrl) {
-  baseUrl  = preFormattedBaseUrl.split('=')[1];
+  baseUrl = preFormattedBaseUrl.split('=')[1];
 } else {
   throw (new Error('Missing valid --base-url command line argument'));
 }
@@ -31,87 +31,89 @@ if (baseUrl.length === 0) {
 let changeFrequency;
 
 if (preFormattedChangeFrequency) {
-    changeFrequency  = preFormattedChangeFrequency.split('=')[1];
+  changeFrequency = preFormattedChangeFrequency.split('=')[1];
 } else {
-    changeFrequency = 'monthly';
+  changeFrequency = 'monthly';
 }
 
 const asyncReaddir = promisify(readdir), asyncWriteFile = promisify(writeFile), asyncLStat = promisify(lstat);
 
 const asyncForEach = async (array, callback) => {
-    for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-    }
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
 }
 
 let allRoots = [];
 
 const readSite = async (dir) => {
-    const directory = await asyncReaddir(dir, { withFileTypes: true });
+  const directory = await asyncReaddir(dir, {withFileTypes: true});
 
-    await asyncForEach(directory, async fileOrDirectory => {
-        let path = fileOrDirectory;
+  await asyncForEach(directory, async fileOrDirectory => {
+    let path = fileOrDirectory;
 
-        if (typeof fileOrDirectory === 'object') {
-            path = fileOrDirectory.name;
-        }
+    if (typeof fileOrDirectory === 'object') {
+      path = fileOrDirectory.name;
+    }
 
-        if (path === '404') {
-            return;
-        }
-        
-        const root = `${dir}/${path}`;
+    if (path === '404') {
+      return;
+    }
 
-        const stat = await asyncLStat(root);
+    const root = `${dir}/${path}`;
 
-        if (stat.isDirectory()) {
-            await readSite(root);
-        } else if (path === 'index.html') {
-            allRoots = [...allRoots, root];
-        }
-    });
+    const stat = await asyncLStat(root);
+
+    if (stat.isDirectory()) {
+      await readSite(root);
+    } else if (path === 'index.html') {
+      allRoots = [...allRoots, root];
+    }
+  });
 }
 
 const formatDate = (date) => {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+  var d = new Date(date),
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
 
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
+  if (month.length < 2)
+    month = '0' + month;
+  if (day.length < 2)
+    day = '0' + day;
 
-    return [year, month, day].join('-');
+  return [year, month, day].join('-');
 }
 
 (async () => {
-    await readSite('build');
+  await readSite('build');
 
-    const siteUrls = allRoots.map(root => root.replace('build/', baseUrl).replace('/index.html', ''));
+  const siteUrls = allRoots.map(root => root.replace('build/', baseUrl).replace('/index.html', ''));
 
-    const urlset = builder.create('urlset', { encoding: 'UTF-8', version: '1.0' });
+  const urlset = builder.create('urlset', {encoding: 'UTF-8', version: '1.0'});
 
-    urlset.attribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+  urlset.attribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
-    siteUrls
-        .filter(url => !blackList.includes(url))
-        .sort((a, b) => a.length - b.length)
-        .forEach(url => {
-            const u = urlset.ele('url');
-            u.ele('loc', url);
-            u.ele('lastmod', formatDate(Date.now()))
-            if (changeFrequency) { 
-                u.ele('changefreq', changeFrequency);
-            }
-      
-            u.ele('priority', 0.8);
-        });
+  siteUrls
+    .filter(url => !blackList.includes(url))
+    .sort((a, b) => a.length - b.length)
+    .forEach(url => {
+      const u = urlset.ele('url');
+      u.ele('loc', url);
+      u.ele('lastmod', formatDate(Date.now()))
+      if (changeFrequency) {
+        u.ele('changefreq', changeFrequency);
+      }
 
-    const sitemap = urlset.end({ pretty: true });
+      url === baseUrl
+        ? u.ele('priority', 1)
+        : u.ele('priority', 0.8);
+    });
 
-    await asyncWriteFile('build/sitemap.xml', sitemap);
+  const sitemap = urlset.end({pretty: true});
 
-    console.log('🙂 Successfully built sitemap.xml in build directory');
+  await asyncWriteFile('build/sitemap.xml', sitemap);
+
+  console.log('🙂 Successfully built sitemap.xml in build directory');
 })();

@@ -1,10 +1,10 @@
 {
-  "name": "@fudohq/react-snap-sitemap",
-  "repository": "fudohq/react-snap-sitemap",
+  "name": "@alex-drocks/react-snap-sitemap",
+  "repository": "alex-drocks/react-snap-sitemap",
   "engines": {
     "node": ">= 8.6.0"
   },
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Create a sitemap post react-snap SSR",
   "main": "index.js",
   "license": "MIT",
