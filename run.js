@@ -8,6 +8,7 @@ const args = process.argv;
 const preFormattedBaseUrl = args.find((arg) => arg.startsWith('--base-url='));
 const exclusionList = args.find((arg) => arg.startsWith('--black-list='));
 const preFormattedChangeFrequency = args.find((arg) => arg.startsWith('--change-frequency='));
+const addSlash = args.find((arg) => arg.startsWith('--add-slash='));
 let blackList = [];
 
 if (exclusionList) {
@@ -17,24 +18,24 @@ if (exclusionList) {
 }
 
 let baseUrl;
-
 if (preFormattedBaseUrl) {
   baseUrl = preFormattedBaseUrl.split('=')[1];
 } else {
   throw (new Error('Missing valid --base-url command line argument'));
 }
-
 if (baseUrl.length === 0) {
   throw (new Error('Pass a valid url to --base-url'));
 }
 
 let changeFrequency;
-
 if (preFormattedChangeFrequency) {
   changeFrequency = preFormattedChangeFrequency.split('=')[1];
 } else {
   changeFrequency = 'monthly';
 }
+
+const shouldAddSlashes = addSlash ? true : false;
+console.log({shouldAddSlashes})
 
 const asyncReaddir = promisify(readdir), asyncWriteFile = promisify(writeFile), asyncLStat = promisify(lstat);
 
@@ -99,16 +100,19 @@ const formatDate = (date) => {
     .filter(url => !blackList.includes(url))
     .sort((a, b) => a.length - b.length)
     .forEach(url => {
+      const isMainPage = url + "/" === baseUrl;
       const u = urlset.ele('url');
-      u.ele('loc', url);
+      if (!isMainPage && shouldAddSlashes) {
+        u.ele("loc", url + "/");
+      } else {
+        u.ele('loc', url);
+      }
       u.ele('lastmod', formatDate(Date.now()))
       if (changeFrequency) {
         u.ele('changefreq', changeFrequency);
       }
 
-      url + "/" === baseUrl
-        ? u.ele('priority', "1.0")
-        : u.ele('priority', "0.8");
+      isMainPage ? u.ele('priority', "1.0") : u.ele('priority', "0.5");
     });
 
   const sitemap = urlset.end({pretty: true});

@@ -4,7 +4,7 @@
   "engines": {
     "node": ">= 8.6.0"
   },
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Create a sitemap post react-snap SSR",
   "keywords": [
     "automatic sitemap generator",
