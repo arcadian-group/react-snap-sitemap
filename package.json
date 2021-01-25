@@ -4,7 +4,7 @@
   "engines": {
     "node": ">= 8.6.0"
   },
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Create a sitemap post react-snap SSR",
   "keywords": [
     "automatic sitemap generator",
@@ -12,6 +12,9 @@
   ],
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "update": "npx npm-check-updates -u"
+  },
   "dependencies": {
     "fs": "^0.0.1-security",
     "util": "^0.12.3",

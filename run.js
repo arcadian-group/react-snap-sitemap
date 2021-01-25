@@ -14,7 +14,7 @@ let blackList = [];
 if (exclusionList) {
   let params = exclusionList.split('=')[1];
   blackList = params.split(',');
-  console.log('👋 Exluding URLs:', blackList.join(', '))
+  console.log('👋 Excluding URLs:', blackList.join(', '));
 }
 
 let baseUrl;
@@ -34,8 +34,8 @@ if (preFormattedChangeFrequency) {
   changeFrequency = 'monthly';
 }
 
-const shouldAddSlashes = addSlash ? true : false;
-console.log({shouldAddSlashes})
+const shouldAddSlashes = !!addSlash;
+console.log({shouldAddSlashes});
 
 const asyncReaddir = promisify(readdir), asyncWriteFile = promisify(writeFile), asyncLStat = promisify(lstat);
 
@@ -43,7 +43,7 @@ const asyncForEach = async (array, callback) => {
   for (let index = 0; index < array.length; index++) {
     await callback(array[index], index, array);
   }
-}
+};
 
 let allRoots = [];
 
@@ -71,7 +71,7 @@ const readSite = async (dir) => {
       allRoots = [...allRoots, root];
     }
   });
-}
+};
 
 const formatDate = (date) => {
   var d = new Date(date),
@@ -85,7 +85,7 @@ const formatDate = (date) => {
     day = '0' + day;
 
   return [year, month, day].join('-');
-}
+};
 
 (async () => {
   await readSite('build');
@@ -107,7 +107,7 @@ const formatDate = (date) => {
       } else {
         u.ele('loc', url);
       }
-      u.ele('lastmod', formatDate(Date.now()))
+      u.ele('lastmod', formatDate(Date.now()));
       if (changeFrequency) {
         u.ele('changefreq', changeFrequency);
       }
