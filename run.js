@@ -32,7 +32,7 @@ const readSite = async (dir) => {
     const directory = await asyncReaddir(dir, { withFileTypes: true });
 
     await asyncForEach(directory, async fileOrDirectory => {
-        const root = `${dir}/${fileOrDirectory}`;
+        const root = `${dir}/${fileOrDirectory.name}`;
         const stat = await asyncLStat(root);
 
         if (stat.isDirectory()) {
