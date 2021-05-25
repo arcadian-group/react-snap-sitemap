@@ -6,7 +6,7 @@ This package allows you to generate a sitemap.xml based off the created director
 
 ## Installation
 
-`npm install -D @alex-drocks/react-snap-sitemap`
+`npm install -D @arcadian-digital/react-snap-sitemap`
 
 ## Usage
 
